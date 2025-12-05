@@ -1,0 +1,19 @@
+<mat-toolbar color="primary">
+  <span>Healthcare</span>
+  <span class="spacer"></span>
+  <ng-container *ngIf="user$ | async as user; else loggedOut">
+    <a mat-button routerLink="/dashboard">Dashboard</a>
+    <a mat-button routerLink="/admin" *ngIf="user.role==='admin'">Admin</a>
+    <a mat-button routerLink="/patients" *ngIf="user.role==='doctor'||user.role==='nurse'">Patients</a>
+    <a mat-button routerLink="/medications" *ngIf="user.role==='doctor'">Prescribe</a>
+    <a mat-button routerLink="/prescriptions" *ngIf="user.role==='doctor'||user.role==='nurse'">Prescriptions</a>
+    <a mat-button routerLink="/medication-tracking" *ngIf="user.role==='nurse'">Track Medications</a>
+    <a mat-button routerLink="/tracking-view" *ngIf="user.role==='doctor'">Tracking View</a>
+    <a mat-button routerLink="/profile" *ngIf="user.role==='patient'">Profile</a>
+    <a mat-button routerLink="/logout">Logout</a>
+  </ng-container>
+  <ng-template #loggedOut>
+    <a mat-button routerLink="/login">Login</a>
+    <a mat-button routerLink="/signup">Signup</a>
+  </ng-template>
+</mat-toolbar>

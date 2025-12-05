@@ -1,0 +1,16 @@
+Contact: security@example.com
+Expires: 2025-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://example.com/.well-known/security.txt
+Policy: https://example.com/security-policy
+
+# Security Policy
+Please report security vulnerabilities to security@example.com
+We appreciate responsible disclosure and will respond within 48 hours.
+
+# Encryption
+Encryption: https://example.com/pgp-key.txt
+
+# Acknowledgments
+We thank security researchers who responsibly disclose vulnerabilities.
+

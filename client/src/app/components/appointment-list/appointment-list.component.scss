@@ -1,0 +1,28 @@
+.container {
+  padding: 20px;
+}
+
+mat-card {
+  padding: 24px;
+}
+
+table {
+  width: 100%;
+}
+
+.status-pending {
+  color: #ff9800;
+}
+
+.status-confirmed {
+  color: #2196f3;
+}
+
+.status-completed {
+  color: #4caf50;
+}
+
+.status-cancelled {
+  color: #f44336;
+}
+

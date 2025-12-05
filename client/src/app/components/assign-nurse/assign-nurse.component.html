@@ -1,0 +1,27 @@
+<div class="container" @fadeIn>
+  <mat-card class="card">
+    <h2>Assign Nurse to Me</h2>
+    <p *ngIf="currentNurse" class="current-nurse">
+      Currently assigned nurse: <strong>{{ currentNurse.username }}</strong>
+    </p>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Select Nurse</mat-label>
+        <mat-select formControlName="nurseId">
+          <mat-option *ngFor="let nurse of nurses" [value]="nurse.id">
+            {{ nurse.username }} ({{ nurse.email }})
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('nurseId')?.hasError('required')">Nurse is required</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading || form.invalid">
+        {{ loading ? 'Assigning...' : 'Assign Nurse' }}
+      </button>
+
+      <div *ngIf="error" class="error" @fadeIn>{{ error }}</div>
+      <div *ngIf="success" class="success" @fadeIn>Nurse assigned successfully!</div>
+    </form>
+  </mat-card>
+</div>
+

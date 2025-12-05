@@ -1,0 +1,25 @@
+<div class="container" @fadeIn>
+  <mat-card class="card">
+    <h2>Write Diagnosis</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Diagnosis</mat-label>
+        <textarea matInput formControlName="diagnosis" rows="5" required></textarea>
+        <mat-error *ngIf="form.get('diagnosis')?.hasError('required')">Diagnosis is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Additional Notes (Optional)</mat-label>
+        <textarea matInput formControlName="notes" rows="3"></textarea>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading || form.invalid">
+        {{ loading ? 'Saving...' : 'Save Diagnosis' }}
+      </button>
+
+      <div *ngIf="error" class="error" @fadeIn>{{ error }}</div>
+      <div *ngIf="success" class="success" @fadeIn>Diagnosis saved successfully! Redirecting...</div>
+    </form>
+  </mat-card>
+</div>
+

@@ -1,0 +1,27 @@
+.card {
+  padding: 32px;
+}
+
+
+.full {
+  width: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+form button {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.error-hint {
+  color: #f44336;
+  font-size: 14px;
+}
+

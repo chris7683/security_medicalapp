@@ -1,0 +1,42 @@
+.container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 800px;
+  padding: 24px;
+}
+
+.diagnosis-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-weight: bold;
+  color: #666;
+}
+
+.diagnosis-text,
+.notes-text {
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+
+.error {
+  color: #f44336;
+  padding: 20px;
+}
+

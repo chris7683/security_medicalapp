@@ -1,0 +1,30 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #000000 !important; /* Black navbar */
+  color: #ffffff !important;
+}
+
+mat-toolbar span {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+mat-toolbar a {
+  margin: 0 4px;
+  transition: background-color 0.2s;
+}
+
+mat-toolbar a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+

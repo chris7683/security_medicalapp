@@ -1,0 +1,57 @@
+<div class="container" @fadeIn>
+  <h2>Weekly Medication Schedule</h2>
+  <mat-card class="card" @fadeIn>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Patient</mat-label>
+        <mat-select formControlName="patientId" placeholder="Select patient">
+          <mat-option *ngFor="let p of patients" [value]="p.id">{{ p.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Medication Name</mat-label>
+        <mat-select formControlName="medicationName" placeholder="Select medication">
+          <mat-option *ngFor="let med of medications" [value]="med">{{ med }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Dosage</mat-label>
+        <mat-select formControlName="dosage" placeholder="Select dosage">
+          <mat-option *ngFor="let dose of dosages" [value]="dose">{{ dose }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Frequency</mat-label>
+        <mat-select formControlName="frequency" placeholder="Select frequency">
+          <mat-option *ngFor="let freq of frequencies" [value]="freq">{{ freq }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Instructions</mat-label>
+        <textarea matInput formControlName="instructions" rows="3" placeholder="Optional instructions"></textarea>
+      </mat-form-field>
+
+      <div class="week-selection">
+        <h3>Select Days of the Week</h3>
+        <div class="select-all">
+          <mat-checkbox formControlName="selectAllWeek">Select All Week</mat-checkbox>
+        </div>
+        <div class="days-grid">
+          <div *ngFor="let day of weekDays" class="day-checkbox">
+            <mat-checkbox [formControl]="$any(form.get('selectedDays')?.get(day.value))">
+              {{ day.label }}
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" class="submit-btn">
+        Add Medications for Selected Days
+      </button>
+    </form>
+  </mat-card>
+</div>

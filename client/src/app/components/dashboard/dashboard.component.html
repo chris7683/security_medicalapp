@@ -1,0 +1,17 @@
+<div *ngIf="user$ | async as user" class="container" @fadeIn>
+  <h2 class="animated-title">Welcome, {{ user.username }}!</h2>
+  <p class="role-badge">{{ user.role | titlecase }}</p>
+  <div class="links" @staggerList>
+    <a mat-raised-button routerLink="/admin" *ngIf="user.role === 'admin'" color="primary" class="link-button">Admin Dashboard</a>
+    <a mat-raised-button routerLink="/patients" *ngIf="user.role === 'doctor' || user.role === 'nurse'" color="primary" class="link-button">View Patients</a>
+    <a mat-raised-button routerLink="/medications" *ngIf="user.role === 'doctor'" color="accent" class="link-button">Prescribe Medication</a>
+    <a mat-raised-button routerLink="/prescriptions" *ngIf="user.role === 'doctor' || user.role === 'nurse'" color="primary" class="link-button">View Prescriptions</a>
+    <a mat-raised-button routerLink="/medication-tracking" *ngIf="user.role === 'nurse'" color="accent" class="link-button">Track Medications</a>
+    <a mat-raised-button routerLink="/tracking-view" *ngIf="user.role === 'doctor'" color="primary" class="link-button">View Tracking</a>
+    <a mat-raised-button routerLink="/appointments" *ngIf="user.role === 'doctor' || user.role === 'patient'" color="primary" class="link-button">Appointments</a>
+    <a mat-raised-button routerLink="/appointment-request" *ngIf="user.role === 'patient'" color="accent" class="link-button">Request Appointment</a>
+    <a mat-raised-button routerLink="/assign-nurse" *ngIf="user.role === 'doctor'" color="accent" class="link-button">Assign Nurse</a>
+    <a mat-raised-button routerLink="/profile" *ngIf="user.role === 'patient'" color="primary" class="link-button">View Profile</a>
+    <a mat-raised-button routerLink="/change-password" color="warn" class="link-button">Change Password</a>
+  </div>
+</div>

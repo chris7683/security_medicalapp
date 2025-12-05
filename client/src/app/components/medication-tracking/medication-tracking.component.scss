@@ -1,0 +1,32 @@
+.container {
+  padding: 24px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-badge.given {
+  background-color: #4caf50;
+  color: white;
+}
+
+.status-badge.missed {
+  background-color: #f44336;
+  color: white;
+}
+
+.status-badge.pending {
+  background-color: #ff9800;
+  color: white;
+}
+
+table {
+  width: 100%;
+  margin-top: 16px;
+}
+

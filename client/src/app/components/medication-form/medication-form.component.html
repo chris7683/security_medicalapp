@@ -1,0 +1,42 @@
+<div class="container" @fadeIn>
+  <h2>Prescribe Medication</h2>
+  <mat-card class="card" @fadeIn>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Patient</mat-label>
+      <mat-select formControlName="patientId" [disabled]="patients.length === 0">
+        <mat-option *ngFor="let p of patients" [value]="p.id">{{ p.name }}</mat-option>
+      </mat-select>
+      <mat-hint *ngIf="patients.length === 0" class="error-hint">
+        ⚠️ No patients assigned to you. Please contact an admin to assign patients.
+      </mat-hint>
+      <mat-hint *ngIf="patients.length > 0">
+        {{ patients.length }} patient(s) available
+      </mat-hint>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Medication Name</mat-label>
+      <mat-select formControlName="name" placeholder="Select medication">
+        <mat-option *ngFor="let med of medications" [value]="med">{{ med }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Dosage</mat-label>
+      <mat-select formControlName="dosage" placeholder="Select dosage">
+        <mat-option *ngFor="let dose of dosages" [value]="dose">{{ dose }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Frequency</mat-label>
+      <mat-select formControlName="frequency" placeholder="Select frequency">
+        <mat-option *ngFor="let freq of frequencies" [value]="freq">{{ freq }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Instructions</mat-label>
+      <textarea matInput formControlName="instructions" rows="3"></textarea>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Prescribe</button>
+  </form>
+  </mat-card>
+</div>

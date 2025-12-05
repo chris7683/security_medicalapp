@@ -1,0 +1,26 @@
+<div class="container" @fadeIn>
+  <mat-card class="card" *ngIf="diagnosis">
+    <h2>Diagnosis</h2>
+    <div class="diagnosis-content">
+      <div class="field">
+        <label>Date:</label>
+        <span>{{ diagnosis.createdAt | date: 'short' }}</span>
+      </div>
+      <div class="field">
+        <label>Doctor:</label>
+        <span>{{ diagnosis.doctor?.username || 'N/A' }}</span>
+      </div>
+      <div class="field">
+        <label>Diagnosis:</label>
+        <div class="diagnosis-text">{{ diagnosis.diagnosis }}</div>
+      </div>
+      <div class="field" *ngIf="diagnosis.notes">
+        <label>Notes:</label>
+        <div class="notes-text">{{ diagnosis.notes }}</div>
+      </div>
+    </div>
+  </mat-card>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</div>
+

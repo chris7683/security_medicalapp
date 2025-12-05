@@ -1,0 +1,110 @@
+.container {
+  padding: 24px;
+}
+
+table {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.nurse-assignment {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 250px;
+}
+
+.assignment-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nurse-select {
+  width: 100%;
+  min-width: 200px;
+}
+
+.assigned-nurse-label {
+  margin-top: 8px;
+}
+
+.assigned-info {
+  font-size: 0.875rem;
+  color: #666;
+  padding: 4px 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.assigned-info strong {
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.error-hint {
+  color: #f44336;
+  font-size: 14px;
+}
+
+.no-nurses {
+  color: #999;
+  font-size: 0.875rem;
+  font-style: italic;
+  margin: 0;
+  padding: 8px;
+}
+
+.condition-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.condition-view {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.condition-text {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  
+  &.no-condition {
+    color: #999;
+    font-style: italic;
+  }
+}
+
+.condition-buttons {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.condition-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.condition-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.condition-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+

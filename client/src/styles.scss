@@ -1,0 +1,141 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: #f5f5f0; /* Beige background */
+  color: #1a1a1a; /* Black text */
+  line-height: 1.6;
+}
+
+/* Utility container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+h1, h2, h3 {
+  color: #000000; /* Black headings */
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+h3 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.mat-mdc-raised-button {
+  margin: 8px 8px 8px 0 !important;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* Card improvements */
+mat-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  margin-bottom: 24px;
+  background: #ffffff !important; /* White cards */
+  border: 1px solid #e0e0e0;
+}
+
+/* Table improvements */
+table {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+mat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+mat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+button, a {
+  transition: all 0.2s ease;
+}
+
+/* Loading spinner alignment */
+mat-spinner {
+  display: inline-block !important;
+  vertical-align: middle;
+}
+
+/* Material Button Theme Overrides - Beige/Black/White */
+.mat-mdc-raised-button.mat-primary {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.mat-mdc-raised-button.mat-primary:hover {
+  background-color: #333333 !important;
+}
+
+.mat-mdc-raised-button.mat-accent {
+  background-color: #666666 !important;
+  color: #ffffff !important;
+}
+
+.mat-mdc-raised-button.mat-accent:hover {
+  background-color: #777777 !important;
+}
+
+.mat-mdc-button {
+  color: #ffffff !important;
+}
+
+.mat-mdc-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Form field overrides */
+.mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+  color: #000000 !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #000000 !important;
+}
+
+/* Ensure action buttons in tables are visible */
+table td button,
+table td .mat-mdc-button,
+table td .mat-mdc-raised-button {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0 4px;
+}
+
+/* Style warning/delete buttons */
+.mat-mdc-raised-button.mat-warn {
+  background-color: #d32f2f !important;
+  color: white !important;
+}
+
+.mat-mdc-raised-button.mat-warn:hover {
+  background-color: #b71c1c !important;
+}

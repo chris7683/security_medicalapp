@@ -1,0 +1,44 @@
+<div class="container" @fadeIn>
+  <mat-card class="card">
+    <h2>Request Appointment</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Doctor</mat-label>
+        <mat-select formControlName="doctorId" [disabled]="doctors.length === 0 || loading">
+          <mat-option *ngFor="let doctor of doctors" [value]="doctor.id">
+            {{ doctor.username }} ({{ doctor.email }})
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="loading">Loading doctors...</mat-hint>
+        <mat-hint *ngIf="!loading && doctors.length === 0" class="error-hint">
+          ⚠️ No doctors found. Check console for errors.
+        </mat-hint>
+        <mat-hint *ngIf="!loading && doctors.length > 0">
+          {{ doctors.length }} doctor(s) available
+        </mat-hint>
+        <mat-error *ngIf="form.get('doctorId')?.hasError('required')">Doctor is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Appointment Date & Time</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="appointmentDate" type="datetime-local" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="form.get('appointmentDate')?.hasError('required')">Appointment date is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Notes (Optional)</mat-label>
+        <textarea matInput formControlName="notes" rows="3"></textarea>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading || form.invalid">
+        {{ loading ? 'Requesting...' : 'Request Appointment' }}
+      </button>
+
+      <div *ngIf="error" class="error" @fadeIn>{{ error }}</div>
+      <div *ngIf="success" class="success" @fadeIn>Appointment requested successfully!</div>
+    </form>
+  </mat-card>
+</div>
+

@@ -1,0 +1,61 @@
+mat-card {
+  margin: 24px 0;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+mat-card h3 {
+  color: #000000; /* Black heading */
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #000000; /* Black border */
+}
+
+table {
+  width: 100%;
+  margin-top: 16px;
+  background: white;
+}
+
+p {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.info-text {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.no-data {
+  padding: 24px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+table {
+  width: 100%;
+  margin-top: 16px;
+  background: white;
+}
+
+button[color="warn"] {
+  background-color: #d32f2f !important;
+  color: white !important;
+}
+
