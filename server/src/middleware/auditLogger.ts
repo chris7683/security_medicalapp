@@ -49,23 +49,65 @@ export function auditLog(action: string) {
 
 /**
  * Log security events for monitoring and alerting
+ * Enhanced with structured logging and severity levels
  */
 export function logSecurityEvent(eventType: string, details: Record<string, any>, req: AuthenticatedRequest) {
+  const severity = getSeverityLevel(eventType);
   const auditEntry = {
     timestamp: new Date().toISOString(),
     eventType,
+    severity,
     userId: req.user?.id || 'anonymous',
     username: req.user?.username || 'anonymous',
-    ip: req.ip || req.socket.remoteAddress || req.headers['x-forwarded-for'] || 'unknown',
+    ip: Array.isArray(req.ip) ? req.ip[0] : (req.ip || req.socket.remoteAddress || getClientIp(req) || 'unknown'),
     userAgent: req.headers['user-agent'] || 'unknown',
     method: req.method,
     path: req.path,
+    requestId: (req as any).requestId || 'unknown',
     ...details,
   };
 
-  // In production, send to SIEM or security monitoring system
-  // eslint-disable-next-line no-console
-  console.error(`[SECURITY ALERT] ${JSON.stringify(auditEntry)}`);
+  // Log based on severity
+  if (severity === 'critical' || severity === 'high') {
+    // eslint-disable-next-line no-console
+    console.error(`[SECURITY ALERT - ${severity.toUpperCase()}] ${JSON.stringify(auditEntry)}`);
+  } else if (severity === 'medium') {
+    // eslint-disable-next-line no-console
+    console.warn(`[SECURITY EVENT - ${severity.toUpperCase()}] ${JSON.stringify(auditEntry)}`);
+  } else {
+    // eslint-disable-next-line no-console
+    console.log(`[SECURITY EVENT - ${severity.toUpperCase()}] ${JSON.stringify(auditEntry)}`);
+  }
+
+  // In production, send to SIEM or security monitoring system (e.g., CloudWatch, ELK, Splunk)
+  // Example: await sendToSIEM(auditEntry);
+}
+
+/**
+ * Get severity level for security event
+ */
+function getSeverityLevel(eventType: string): 'critical' | 'high' | 'medium' | 'low' {
+  const critical = ['sql_injection', 'xss_attempt', 'command_injection', 'path_traversal', 'unauthorized_access'];
+  const high = ['authentication_failure', 'brute_force', 'privilege_escalation', 'data_breach'];
+  const medium = ['suspicious_pattern', 'rate_limit_exceeded', 'invalid_input', 'error_response'];
+  
+  const lowerType = eventType.toLowerCase();
+  if (critical.some(c => lowerType.includes(c))) return 'critical';
+  if (high.some(h => lowerType.includes(h))) return 'high';
+  if (medium.some(m => lowerType.includes(m))) return 'medium';
+  return 'low';
+}
+
+/**
+ * Get client IP address
+ */
+function getClientIp(req: AuthenticatedRequest): string {
+  return (
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+    (req.headers['x-real-ip'] as string) ||
+    req.socket.remoteAddress ||
+    'unknown'
+  );
 }
 
 

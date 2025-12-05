@@ -29,6 +29,20 @@ export function additionalSecurityHeaders(req: Request, res: Response, next: Nex
   // Add custom security header
   res.setHeader('X-Content-Security-Policy', 'default-src \'self\'');
   
+  // Add Expect-CT header (Certificate Transparency)
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Expect-CT', 'max-age=86400, enforce');
+  }
+  
+  // Add X-DNS-Prefetch-Control
+  res.setHeader('X-DNS-Prefetch-Control', 'off');
+  
+  // Add X-Download-Options (IE8+)
+  res.setHeader('X-Download-Options', 'noopen');
+  
+  // Add X-Permitted-Cross-Domain-Policies
+  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  
   next();
 }
 

@@ -1,6 +1,8 @@
 import { Response } from 'express';
 import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
+import { QueryTypes } from 'sequelize';
+import { sequelize } from '../config/database';
 import { User } from '../models/User';
 import { Patient } from '../models/Patient';
 import { Appointment } from '../models/Appointment';
@@ -90,11 +92,28 @@ export async function deleteUser(req: AuthenticatedRequest, res: Response) {
 
   // 8. Delete patient record if user is a patient
   if (user.role === 'patient') {
+    // First, delete all medications for this patient (they reference patient_id)
+    await Medication.destroy({ where: { patientId: userId } });
+    
+    // Then delete the patient record
     await Patient.destroy({ where: { id: userId } });
   }
 
-  // 9. Finally, delete the user
-  // RefreshToken and PasswordResetToken have ON DELETE CASCADE, so they'll be deleted automatically
+  // 9. Delete refresh tokens for this user (explicit deletion for safety, CASCADE will also handle it)
+  await sequelize.query('DELETE FROM refresh_tokens WHERE user_id = :userId', {
+    replacements: { userId },
+    type: QueryTypes.DELETE,
+  });
+
+  // 10. Delete password reset tokens for this user (explicit deletion for safety, CASCADE will also handle it)
+  await sequelize.query('DELETE FROM password_reset_tokens WHERE user_id = :userId', {
+    replacements: { userId },
+    type: QueryTypes.DELETE,
+  });
+
+  // 11. Finally, delete the user
+  // RefreshToken and PasswordResetToken now have ON DELETE CASCADE, so they'll be deleted automatically
+  // But we delete them explicitly above for immediate effect and logging
   await user.destroy();
 
   return res.json({ message: 'User deleted successfully' });

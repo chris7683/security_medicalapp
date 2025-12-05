@@ -21,6 +21,8 @@ import { apiLimiter, authLimiter, sensitiveLimiter } from './middleware/rateLimi
 import { sanitizeInput } from './middleware/inputSanitizer';
 import { generateCSRFToken, verifyCSRF } from './middleware/csrf';
 import { additionalSecurityHeaders } from './middleware/securityHeaders';
+import { securityMonitoring } from './middleware/securityMonitoring';
+import { validateRequest } from './middleware/requestValidation';
 
 dotenv.config();
 
@@ -32,6 +34,9 @@ app.set('trust proxy', 1);
 // HTTP request logging with Morgan
 // Use 'combined' format for production, 'dev' for development
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
+// Security monitoring (before other middleware to track all requests)
+app.use(securityMonitoring);
 
 // Additional security headers (before Helmet)
 app.use(additionalSecurityHeaders);
@@ -97,6 +102,9 @@ app.use(compression());
 // Request size limit (prevent DoS)
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Request validation (non-breaking, just logging)
+app.use(validateRequest);
 
 // Input sanitization (additional layer)
 app.use(sanitizeInput);
@@ -177,26 +185,43 @@ app.use((_req: Request, res: Response) => {
   res.status(404).json({ message: 'Not Found' });
 });
 
-// Error handler - Enhanced security
+// Error handler - Enhanced security with better logging
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   const error = err instanceof Error ? err : new Error(String(err));
+  const requestId = (_req as any).requestId || 'unknown';
   
-  // Log error details server-side for debugging
-  console.error('Error:', {
+  // Log error details server-side for debugging and security monitoring
+  const errorDetails = {
+    requestId,
     message: error.message,
     stack: process.env.NODE_ENV === 'production' ? undefined : error.stack,
     path: _req.path,
     method: _req.method,
     origin: _req.headers.origin,
+    ip: _req.ip || _req.socket.remoteAddress || 'unknown',
+    userAgent: _req.headers['user-agent'],
     timestamp: new Date().toISOString(),
-  });
+  };
+  
+  console.error('[ERROR]', JSON.stringify(errorDetails));
+
+  // Log security-relevant errors
+  if (error.message.includes('CORS') || error.message.includes('Forbidden') || error.message.includes('Unauthorized')) {
+    const { logSecurityEvent } = require('./middleware/auditLogger');
+    logSecurityEvent('security_error', {
+      requestId,
+      errorType: error.message.includes('CORS') ? 'cors_violation' : 'access_denied',
+      path: _req.path,
+      method: _req.method,
+    }, _req as any);
+  }
 
   // Handle CORS errors specifically
   if (error.message.includes('CORS')) {
     return res.status(403).json({ 
-      message: 'CORS policy: ' + error.message,
-      origin: _req.headers.origin 
+      message: 'CORS policy violation',
+      requestId,
     });
   }
 
@@ -208,6 +233,7 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   // Never expose stack traces or internal details in production
   res.status(status).json({ 
     message,
+    requestId, // Include request ID for support tracking
     ...(isProduction ? {} : { stack: error.stack }) // Only in development
   });
 });
