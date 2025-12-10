@@ -1,0 +1,56 @@
+<div class="verify-otp-container" @fadeIn>
+  <mat-card class="verify-otp-card">
+    <mat-card-header>
+      <mat-card-title>Verify Login Code</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="info-text">
+        We've sent a 6-digit code to <strong>{{ email }}</strong>. 
+        Please check your email and enter the code below to complete your login.
+      </p>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Enter 6-digit code</mat-label>
+          <input 
+            matInput 
+            formControlName="otp" 
+            type="text" 
+            maxlength="6"
+            placeholder="000000"
+            autocomplete="one-time-code"
+            (input)="onOtpInput($event)"
+          />
+          <mat-hint>Enter the 6-digit code from your email</mat-hint>
+          <mat-error *ngIf="form.get('otp')?.hasError('required')">Code is required</mat-error>
+          <mat-error *ngIf="form.get('otp')?.hasError('pattern')">Code must be 6 digits</mat-error>
+        </mat-form-field>
+
+        <div *ngIf="error" class="error-message">
+          {{ error }}
+        </div>
+
+        <div class="button-group">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            [disabled]="form.invalid || loading"
+            class="submit-button"
+          >
+            <mat-spinner *ngIf="loading" diameter="20" class="spinner"></mat-spinner>
+            <span *ngIf="!loading">Verify Code</span>
+            <span *ngIf="loading">Verifying...</span>
+          </button>
+        </div>
+
+        <div class="resend-section">
+          <p class="resend-text">Didn't receive the code?</p>
+          <button mat-button type="button" (click)="resendOTP()" [disabled]="loading">
+            Resend Code
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+

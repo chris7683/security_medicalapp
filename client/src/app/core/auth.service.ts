@@ -53,8 +53,12 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiBase}/auth/signup`, payload).pipe(tap(res => this.persistAuth(res)));
   }
 
-  login(payload: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiBase}/auth/login`, payload).pipe(tap(res => this.persistAuth(res)));
+  login(payload: { email: string; password: string }): Observable<AuthResponse | { requiresOTP: boolean; message: string; email: string }> {
+    return this.http.post<AuthResponse | { requiresOTP: boolean; message: string; email: string }>(`${this.apiBase}/auth/login`, payload);
+  }
+
+  verifyLoginOTP(payload: { email: string; otp: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiBase}/auth/verify-login-otp`, payload).pipe(tap(res => this.persistAuth(res)));
   }
 
   refresh(): Observable<{ accessToken: string }> {

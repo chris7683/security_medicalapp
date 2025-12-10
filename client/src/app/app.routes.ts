@@ -20,10 +20,12 @@ import { DiagnosisFormComponent } from './components/diagnosis-form/diagnosis-fo
 import { DiagnosisViewComponent } from './components/diagnosis-view/diagnosis-view.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { AssignNurseComponent } from './components/assign-nurse/assign-nurse.component';
+import { VerifyOtpComponent } from './components/verify-otp/verify-otp.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'verify-otp', component: VerifyOtpComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminDashboardComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },

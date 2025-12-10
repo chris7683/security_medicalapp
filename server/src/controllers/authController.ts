@@ -6,10 +6,12 @@ import { User } from '../models/User';
 import { Patient } from '../models/Patient';
 import { RefreshToken } from '../models/RefreshToken';
 import { PasswordResetToken } from '../models/PasswordResetToken';
+import { LoginOTP } from '../models/LoginOTP';
+import { Op } from 'sequelize';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { recordFailedLogin, clearFailedLogin } from '../middleware/accountLockout';
 import { sanitizeUsername, validateEmail } from '../middleware/inputSanitizer';
-import { sendPasswordResetOTP } from '../utils/email';
+import { sendPasswordResetOTP, sendLoginOTP } from '../utils/email';
 
 export async function signup(req: Request, res: Response) {
   const errors = validationResult(req);
@@ -168,29 +170,89 @@ export async function login(req: Request, res: Response) {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 
-  // Check if 2FA is enabled
-  if (user.twoFactorEnabled && user.twoFactorSecret) {
-    // If 2FA token is not provided, return response indicating 2FA is required
-    if (!twoFactorToken) {
-      return res.status(200).json({
-        requires2FA: true,
-        message: '2FA token required',
-      });
-    }
+  // Password is valid - now send OTP via email for login verification
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // Verify 2FA token
-    const verified = speakeasy.totp.verify({
-      secret: user.twoFactorSecret,
-      encoding: 'base32',
-      token: twoFactorToken,
-      window: 2, // Allow 2 time steps (60 seconds) of tolerance
+  // Invalidate any existing unused OTPs for this user
+  await LoginOTP.update(
+    { used: true },
+    { where: { userId: user.id, used: false } }
+  );
+
+  // Store OTP in database
+  try {
+    await LoginOTP.create({
+      userId: user.id,
+      email: emailNormalized,
+      otp,
+      expiresAt,
+      used: false,
     });
-
-    if (!verified) {
-      recordFailedLogin(emailNormalized);
-      return res.status(401).json({ message: 'Invalid 2FA token' });
-    }
+  } catch (error) {
+    console.error('Failed to create login OTP:', error);
+    return res.status(500).json({ message: 'Failed to generate login code' });
   }
+
+  // Send OTP via email
+  try {
+    await sendLoginOTP(emailNormalized, otp, user.username);
+  } catch (error) {
+    console.error('Failed to send login OTP email:', error);
+    // Still return success - OTP is stored, user can check console logs if email fails
+  }
+
+  // Return response indicating OTP is required
+  return res.json({
+    requiresOTP: true,
+    message: 'Login code sent to your email. Please check your inbox and enter the code to complete login.',
+    email: emailNormalized, // Return email for frontend to use in verification
+  });
+}
+
+export async function verifyLoginOTP(req: Request, res: Response) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+  const { email, otp } = req.body as {
+    email: string;
+    otp: string;
+  };
+
+  const emailNormalized = email.trim().toLowerCase();
+
+  // Find user
+  const user = await User.findOne({
+    where: {
+      email: emailNormalized,
+    },
+  });
+
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid credentials' });
+  }
+
+  // Find valid OTP for this user
+  const loginOTP = await LoginOTP.findOne({
+    where: {
+      userId: user.id,
+      email: emailNormalized,
+      otp: otp.trim(),
+      used: false,
+      expiresAt: {
+        [Op.gt]: new Date(), // Not expired
+      },
+    },
+  });
+
+  if (!loginOTP) {
+    recordFailedLogin(emailNormalized);
+    return res.status(401).json({ message: 'Invalid or expired login code' });
+  }
+
+  // Mark OTP as used
+  await loginOTP.update({ used: true });
 
   // Clear failed login attempts on successful login
   clearFailedLogin(emailNormalized);
@@ -202,7 +264,6 @@ export async function login(req: Request, res: Response) {
   try {
     await RefreshToken.create({ token: refreshToken, userId: user.id, expiresAt: refreshExpiry });
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.warn('Refresh token persistence skipped:', (e as Error).message);
   }
 
@@ -210,7 +271,6 @@ export async function login(req: Request, res: Response) {
     user: { id: user.id, username: user.username, email: user.email, role: user.role },
     accessToken,
     refreshToken,
-    requires2FA: false,
   });
 }
 

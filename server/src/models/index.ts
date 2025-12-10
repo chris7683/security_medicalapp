@@ -2,6 +2,7 @@ import { User } from './User';
 import { Patient } from './Patient';
 import { RefreshToken } from './RefreshToken';
 import { PasswordResetToken } from './PasswordResetToken';
+import { LoginOTP } from './LoginOTP';
 import { Medication } from './Medication';
 import { MedicationTracking } from './MedicationTracking';
 import { Appointment } from './Appointment';
@@ -19,6 +20,9 @@ User.hasMany(RefreshToken, { foreignKey: 'userId' });
 
 PasswordResetToken.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(PasswordResetToken, { foreignKey: 'userId' });
+
+LoginOTP.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(LoginOTP, { foreignKey: 'userId' });
 
 Medication.belongsTo(Patient, { as: 'Patient', foreignKey: 'patientId' });
 Patient.hasMany(Medication, { as: 'Medications', foreignKey: 'patientId' });
@@ -48,6 +52,6 @@ Appointment.hasOne(Diagnosis, { as: 'diagnosis', foreignKey: 'appointmentId' });
 User.hasMany(Diagnosis, { as: 'diagnoses', foreignKey: 'doctorId' });
 Patient.hasMany(Diagnosis, { as: 'diagnoses', foreignKey: 'patientId' });
 
-export { User, Patient, RefreshToken, PasswordResetToken, Medication, MedicationTracking, Appointment, Diagnosis };
+export { User, Patient, RefreshToken, PasswordResetToken, LoginOTP, Medication, MedicationTracking, Appointment, Diagnosis };
 
 

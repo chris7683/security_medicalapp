@@ -63,4 +63,18 @@ export const resetPasswordValidator = [
     .withMessage('Password must be at least 8 characters'),
 ];
 
+export const verifyLoginOTPValidator = [
+  body('email')
+    .trim()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Invalid email format'),
+  body('otp')
+    .trim()
+    .isString()
+    .isLength({ min: 6, max: 6 })
+    .matches(/^\d+$/)
+    .withMessage('OTP must be a 6-digit number'),
+];
+
 

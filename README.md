@@ -24,12 +24,23 @@ POSTGRES_PASSWORD=postgres
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 
-# Email configuration for password reset (optional - if not set, emails will be logged to console)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
+# Email configuration for password reset OTP
+# Option 1: Ethereal Email (FREE, no signup - recommended for development)
+USE_ETHEREAL_EMAIL=true
+
+# Option 2: Mailtrap (FREE sandbox - signup at mailtrap.io)
+# USE_MAILTRAP=true
+# SMTP_HOST=smtp.mailtrap.io
+# SMTP_PORT=2525
+# SMTP_USER=your_mailtrap_username
+# SMTP_PASSWORD=your_mailtrap_password
+
+# Option 3: Custom SMTP (Gmail, Outlook, etc.)
+# SMTP_HOST=smtp.gmail.com
+# SMTP_PORT=587
+# SMTP_SECURE=false
+# SMTP_USER=your-email@gmail.com
+# SMTP_PASSWORD=your-app-password
 
 Install
 
@@ -60,7 +71,8 @@ Security Features
 
 API Endpoints
 - POST /api/auth/signup
-- POST /api/auth/login
+- POST /api/auth/login (sends OTP via email)
+- POST /api/auth/verify-login-otp (verify OTP and complete login)
 - POST /api/auth/refresh
 - POST /api/auth/logout
 - POST /api/auth/forgot-password (request password reset OTP)
@@ -71,15 +83,21 @@ API Endpoints
 - POST /api/users/:patientId/assign-nurse (role: doctor)
 
 Database Setup
-Run the SQL migration to create the password reset tokens table:
+Run the SQL migrations to create the required tables:
 ```bash
+# Create password reset tokens table
 psql -U postgres -d healthcare -f server/create_password_reset_tokens_table.sql
+
+# Create login OTP table (for email-based login verification)
+psql -U postgres -d healthcare -f server/create_login_otps_table.sql
 ```
 
 Notes
 - Patient users automatically get a matching patient record (id equals user id).
 - For production, change secrets and enable SSL for Postgres.
+- **Login Flow**: After entering email/password, users receive a 6-digit OTP via email. They must enter this code on the verification page to complete login.
 - Password reset uses OTP (One-Time Password) sent via email. OTPs expire in 15 minutes.
-- If email is not configured, password reset OTPs will be logged to the console for development purposes.
+- Login OTPs expire in 10 minutes.
+- If email is not configured, OTPs will be logged to the console for development purposes (check server logs for preview URLs if using Ethereal Email).
 
 

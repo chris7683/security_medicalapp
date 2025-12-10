@@ -43,6 +43,15 @@ export class LoginComponent {
     this.error = null;
     this.auth.login(this.form.value as any).subscribe({
       next: (res: any) => {
+        // Check if OTP is required
+        if (res?.requiresOTP) {
+          // Store email for OTP verification page
+          localStorage.setItem('pendingLoginEmail', res.email);
+          this.router.navigateByUrl('/verify-otp');
+          return;
+        }
+        
+        // Normal login response with tokens
         const selected = this.form.value.role;
         const actual = res?.user?.role;
         if (selected && actual && selected !== actual) {
